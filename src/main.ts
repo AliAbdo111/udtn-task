@@ -10,6 +10,13 @@ async function bootstrap() {
   .setVersion('1.0')
   .addTag('auth')
   .addTag('products')
+  .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    },
+    'access_token')
   .build();
 const document = SwaggerModule.createDocument(app, config);
 SwaggerModule.setup('api', app, document);
