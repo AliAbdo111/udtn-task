@@ -11,13 +11,11 @@ import { LoginDto } from './dto/login-dto';
 export class AuthUserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>, 
+    private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(
-   createUserDto: CreateAuthUserDto,
-  ): Promise<User> {
+  async register(createUserDto: CreateAuthUserDto): Promise<User> {
     const { email, password, role } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
     return this.userRepository.save({ email, password: hashedPassword, role });
@@ -26,11 +24,13 @@ export class AuthUserService {
   async login(loginPayload: LoginDto): Promise<any> {
     const { email, password } = loginPayload;
     const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new BadRequestException('Invalid credentials');
+
     if (user && (await bcrypt.compare(password, user.password))) {
       const payload = { email: user.email, sub: user.id, role: user.role };
       return { access_token: this.jwtService.sign(payload) };
     }
+
     throw new BadRequestException('Invalid credentials');
   }
-
 }

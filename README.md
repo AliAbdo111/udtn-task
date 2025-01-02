@@ -1,73 +1,156 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Product Management API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Overview
+This project is a backend application built with **NestJS** to manage products. It includes authentication and role-based access control (RBAC) using **JWT** and custom **guards**. The application allows users with the `admin` role to create, update, and delete products, while general users can view product information.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Features
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Authentication**: JWT-based authentication.
+- **Authorization**: Role-based access control using custom guards.
+- **CRUD Operations**: Create, read, update, and delete products.
+- **Swagger API Documentation**: Easily explore and test API endpoints.
+
+---
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+- [Node.js](https://nodejs.org/) (>= 16.x)
+- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [PostgreSQL](https://www.postgresql.org/) or another TypeORM-compatible database
+
+---
 
 ## Installation
 
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd <repository-folder>
+   ```
+
+2. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Set Up Environment Variables**:
+   Create a `.env` file in the root directory and configure the following variables:
+   ```env
+   JWT_SECRET=your_jwt_secret
+   JWT_EXPIRATION_TIME=3600
+   DATABASE_HOST=localhost
+   DATABASE_PORT=5432
+   DATABASE_USERNAME=your_db_user
+   DATABASE_PASSWORD=your_db_password
+   DATABASE_NAME=your_db_name
+   ```
+
+4. **Run Database Migrations**:
+   ```bash
+   npm run typeorm migration:run
+   ```
+
+---
+
+## Running the Application
+
+### Development Mode
 ```bash
-$ npm install
+npm run start:dev
 ```
 
-## Running the app
-
+### Production Mode
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run build
+npm run start:prod
 ```
 
-## Test
+### Swagger Documentation
+Navigate to `http://localhost:<PORT>/api` to access the Swagger UI and test API endpoints.
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+## API Endpoints
 
-# test coverage
-$ npm run test:cov
+### Authentication Endpoints
+
+- **Login**: `POST /auth/login`
+  - Request: `{ email: string, password: string }`
+  - Response: `{ access_token: string }`
+
+### Product Endpoints
+
+- **Create Product**: `POST /product`
+  - Requires `admin` role.
+  - Body: `{ name: string, price: number, description: string }`
+
+- **Get All Products**: `GET /product`
+  - Accessible to all users.
+
+- **Get Product by ID**: `GET /product/:id`
+  - Accessible to all users.
+
+- **Update Product**: `PUT /product/:id`
+  - Requires `admin` role.
+
+- **Delete Product**: `DELETE /product/:id`
+  - Requires `admin` role.
+
+---
+
+## Project Structure
+
+```plaintext
+src/
+├── auth-user/           # Authentication and Authorization logic
+│   ├── decorators/      # Custom decorators (e.g., Roles)
+│   ├── guards/          # Role-based and Auth guards
+│   ├── jwt.strategy.ts  # JWT Strategy for authentication
+│   └── auth-user.module.ts
+├── product/             # Product module
+│   ├── dto/             # Data Transfer Objects for validation
+│   ├── entities/        # Database entities
+│   ├── product.service.ts
+│   └── product.controller.ts
+├── app.module.ts        # Root module
+└── main.ts              # Application entry point
 ```
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Tests
 
-## Stay in touch
+Run tests using the following command:
+```bash
+npm run test
+```
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Create a feature branch.
+3. Commit your changes.
+4. Push to the branch.
+5. Create a pull request.
+
+---
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Contact
+
+For issues or questions, please contact:
+
+- **Email**: your-email@example.com
+- **GitHub**: [your-github-profile](https://github.com/your-github-profile)
+

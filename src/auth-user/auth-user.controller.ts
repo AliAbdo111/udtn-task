@@ -19,7 +19,7 @@ export class AuthUserController {
   }
 
   @Post('login')
-  @ApiOperation({ summary: 'Login User'})
+  @ApiOperation({ summary: 'Login User' })
   @ApiBody({
     type: LoginDto,
     description: 'Regitration payload',

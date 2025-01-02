@@ -6,12 +6,13 @@ import { ConfigModule } from '@nestjs/config';
 import { ProductModule } from './product/product.module';
 import { AuthUserModule } from './auth-user/auth-user.module';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth-user/guard/role-guard';
-import { JwtStrategy } from './auth-user/jwt.strategy';
+import { RolesGuard } from './auth-user/guards/role-guard';
+import { AuthGuard } from './auth-user/guards/auth-guard';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), 
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',
@@ -28,9 +29,10 @@ import { JwtStrategy } from './auth-user/jwt.strategy';
   controllers: [AppController],
   providers: [
     AppService,
+    JwtService,
     {
       provide: APP_GUARD,
-      useClass: JwtStrategy,
+      useClass: AuthGuard,
     },
     {
       provide: APP_GUARD,

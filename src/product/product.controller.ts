@@ -17,17 +17,17 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/auth-user/decorators/decorator-role';
-import { RolesGuard } from 'src/auth-user/guard/role-guard';
+import { Role, Roles } from 'src/auth-user/decorators/decorator-role';
+import { RolesGuard } from 'src/auth-user/guards/role-guard';
+import { AuthGuard } from 'src/auth-user/guards/auth-guard';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
-  @Roles('admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Create a new product (Admin only)' })
   @ApiBearerAuth('access_token')
   @ApiBody({
@@ -55,8 +55,8 @@ export class ProductController {
     return this.productService.findOne(id);
   }
 
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Put(':id')
   @ApiOperation({ summary: 'Update a product (Admin only)' })
   @ApiParam({
@@ -76,10 +76,10 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @ApiOperation({ summary: 'Delete a product (Admin only)' })
-  @ApiParam({ 
+  @ApiParam({
     name: 'id',
     description: 'The ID of the product to delete',
     type: Number,
