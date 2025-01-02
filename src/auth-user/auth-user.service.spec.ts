@@ -43,19 +43,16 @@ describe('AuthUserService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('validateUser', () => {
+  describe('login', () => {
     it('should return a user if validation is successful', async () => {
       const mockUser = {
         id: 1,
-        email: 'test@example.com',
-        password: 'hashedPassword',
+        email: 'email12@example.com',
+        password: 'Password2@@A',
       };
       mockUserRepository.findOne.mockResolvedValue(mockUser);
 
-      const result = await service.validateUser(
-        'test@example.com',
-        'hashedPassword',
-      );
+      const result = await service.login('email12@example.com', 'Password2@@A');
       expect(result).toEqual(mockUser);
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: 'test@example.com' },

@@ -30,14 +30,7 @@ import { JwtService } from '@nestjs/jwt';
   providers: [
     AppService,
     JwtService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+  
   ],
 })
 export class AppModule {}
